@@ -30,7 +30,7 @@ const Features = ({ playerState, playerFeatures }) => {
 
   const handleVolumeChange = (e) => {
     const value = Number(e.target.value);
-    const normalized = value / 10;
+    const normalized = value / 100;
     onChangeVolume(normalized);
   }
 
@@ -122,7 +122,7 @@ const Features = ({ playerState, playerFeatures }) => {
             onChange={handleVolumeChange}
             className="features-volume-range"
             style={{
-              background: `linear-gradient(to right, #a855f7 ${volume * 100 }% , #333 ${volume * 100 })`,
+              background: `linear-gradient(to right, #a855f7 ${volume * 100 }% , #333 ${volume * 100 }%)`,
             }}
           />
         </div>

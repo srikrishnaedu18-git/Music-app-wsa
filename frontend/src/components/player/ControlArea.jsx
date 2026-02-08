@@ -115,7 +115,7 @@ const ControlArea = ({ playerState, playerControls }) => {
           className="control-progress"
           onChange={(e) => handleSeek(Number(e.target.value))}
           style={{
-            background: `linear-gradient(to right , #a855f7 ${duration ? (currentTime / duration) * 100 : 0}% , #333 ${duration ? (currentTime / duration) * 100 : 0})`,
+            background: `linear-gradient(to right , #a855f7 ${duration ? (currentTime / duration) * 100 : 0}% , #333 ${duration ? (currentTime / duration) * 100 : 0}%)`,
           }}
         />
         <div className="control-times">
