@@ -1,4 +1,4 @@
-import { useReducer, useState  , useRef} from "react";
+import { useReducer, useState, useRef } from "react";
 import React from "react";
 const initalAudioState = {
   isPlaying: false,
@@ -11,6 +11,7 @@ const initalAudioState = {
   currentIndex: null,
   currentSong: null,
   currentTime: 0,
+  duration: 0,
 };
 
 function useAudioReducer(state, action) {
@@ -50,6 +51,8 @@ function useAudioReducer(state, action) {
       };
     case "SET_CURRENT_TIME":
       return { ...state, currentTime: action.payload };
+    case "SET_DURATION":
+      return { ...state, duration: action.payload };
     default:
       return state;
   }
@@ -60,8 +63,6 @@ const useAudioPlayer = (songs) => {
     useAudioReducer,
     initalAudioState,
   );
-
-  const [duration, setDuration] = React.useState(0);
   const previousVolumeRef = React.useRef(1);
   const audioRef = React.useRef(null);
 
@@ -117,7 +118,7 @@ const useAudioPlayer = (songs) => {
       return;
     }
 
-    if (audioState.shuffleEnabled || songs.length > 1) {
+    if (audioState.shuffleEnabled) {
       let randomIndex = audioState.currentIndex;
       while (randomIndex === audioState.currentIndex) {
         randomIndex = Math.floor(Math.random() * songs.length);
@@ -128,13 +129,27 @@ const useAudioPlayer = (songs) => {
 
     const nextIndex = (audioState.currentIndex + 1) % songs.length;
     playSongAtIndex(nextIndex);
+    console.log("Before NEXT, currentIndex:", audioState.currentIndex);
   };
 
   const handlePrevious = () => {
-    if (!songs.length) return;
+    console.log(
+      "handlePrevious called, currentIndex:",
+      audioState.currentIndex,
+    );
 
+    if (!songs.length) return;
     if (audioState.currentIndex === null) {
       playSongAtIndex(0);
+      return;
+    }
+
+    if (audioState.shuffleEnabled) {
+      let randomIndex = audioState.currentIndex;
+      while (randomIndex === audioState.currentIndex) {
+        randomIndex = Math.floor(Math.random() * songs.length);
+      }
+      playSongAtIndex(randomIndex);
       return;
     }
 
@@ -152,11 +167,12 @@ const useAudioPlayer = (songs) => {
   const handleLoadedMetadata = () => {
     const audio = audioRef.current;
     if (!audio) return;
-    setDuration(audio.duration || 0);
+    const dur = Math.floor(audio.duration) || 0;
+    dispatch({ type: "SET_DURATION", payload: dur }); // ✅ update reducer
     audio.playbackRate = audioState.playbackSpeed;
     audio.volume = audioState.volume;
     audio.muted = audioState.isMuted;
-    dispatch({ type: "PLAY" });
+    // ❌ remove dispatch({ type: "PLAY" })
   };
 
   const handleEnded = (volume) => {
@@ -212,8 +228,8 @@ const useAudioPlayer = (songs) => {
       audio.playbackRate = newSpeed;
     }
   };
-    
-    const handleSeek = (time) => {
+
+  const handleSeek = (time) => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.currentTime = time;
@@ -237,32 +253,33 @@ const useAudioPlayer = (songs) => {
     }
   };
 
-    return {
-        audioRef,
-        currentIndex: audioState.currentIndex,
-        currentSong: audioState.currentSong,
-        isPlaying: audioState.isPlaying,
-        currentTime: audioState.currentTime,
-        isLoading: audioState.isLoading,
-        duration,
-        isMuted: audioState.isMuted,
-        volume: audioState.volume,
-        loopEnabled: audioState.loopEnabled,
-        shuffleEnabled: audioState.shuffleEnabled,
-        playbackSpeed: audioState.playbackSpeed,
-        playSongAtIndex,
-        handleTogglePlay,
-        handleNext,
-        handlePrevious,
-        handleTimeUpdate,
-        handleLoadedMetadata,
-        handleEnded,
-        handleToggleMute,
-        handleToggleLoop,
-        handleToggleShuffle,
-        handleChangeSpeed,
-        handleChangeVolume,
-        handleSeek,
+  return {
+    audioRef,
+    currentIndex: audioState.currentIndex,
+    currentSong: audioState.currentSong,
+    isPlaying: audioState.isPlaying,
+    currentTime: audioState.currentTime,
+    isLoading: audioState.isLoading,
+    duration: audioState.duration,
+    isMuted: audioState.isMuted,
+    volume: audioState.volume,
+    loopEnabled: audioState.loopEnabled,
+    shuffleEnabled: audioState.shuffleEnabled,
+    playbackSpeed: audioState.playbackSpeed,
+    duration: audioState.duration,
+    playSongAtIndex,
+    handleTogglePlay,
+    handleNext,
+    handlePrevious,
+    handleTimeUpdate,
+    handleLoadedMetadata,
+    handleEnded,
+    handleToggleMute,
+    handleToggleLoop,
+    handleToggleShuffle,
+    handleChangeSpeed,
+    handleChangeVolume,
+    handleSeek,
   };
 };
 

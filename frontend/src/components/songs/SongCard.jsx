@@ -5,7 +5,7 @@ const SongCard = ({ song, onSelectFavourite }) => {
   return (
     <div className="song-card" onClick={onSelectFavourite}>
       <div className="song-card-image">
-        <img src={song.img} alt={song.name} loading="lazy" />
+        <img src={song.image} alt={song.name} loading="lazy" />
       </div>
       <div className="song-card-info">
         <h4 className="song-title">{song.name}</h4>

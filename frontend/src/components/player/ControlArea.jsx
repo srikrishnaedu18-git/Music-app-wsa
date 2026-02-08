@@ -10,6 +10,7 @@ import "../../css/footer/ControlArea.css";
 import { useDispatch, useSelector } from "react-redux";
 import { current } from "@reduxjs/toolkit";
 import { openAuthModal } from "../../redux/slices/uiSlice";
+import { updateFavourites } from "../../redux/slices/authSlice.js";
 import { formatTime } from "../utils/helper.js";
 import axios from "axios";
 const ControlArea = ({ playerState, playerControls }) => {
@@ -21,7 +22,7 @@ const ControlArea = ({ playerState, playerControls }) => {
   const { user, token, isAuthenticated } = useSelector((state) => state.auth);
   const { isPlaying, currentTime, currentSong, duration, isLoading } =
     playerState;
-  const { handleTogglePlay, handleNext, handlePrev, handleSeek } =
+  const { handleTogglePlay, handleNext, handlePrevious, handleSeek } =
     playerControls;
 
   const currentSongId = currentSong?.id;
@@ -41,7 +42,7 @@ const ControlArea = ({ playerState, playerControls }) => {
         audio: currentSong.audio,
       };
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/songs/favourite`,
+        `${import.meta.env.VITE_BASE_URL}/api/songs/favourite`,
         { song: songData },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -59,11 +60,19 @@ const ControlArea = ({ playerState, playerControls }) => {
           type="button"
           aria-label="previous"
           className="control-icon-btn"
-          onClick={handlePrev}
+          onClick={() => {
+            handlePrevious();
+          }}
+          
         >
           <TbPlayerTrackPrevFilled color="#a855f7" size={24} />
         </button>
-        <button type="button" aria-label="play" className="control-play-btn" onClick={handleTogglePlay} > 
+        <button
+          type="button"
+          aria-label="play"
+          className="control-play-btn"
+          onClick={handleTogglePlay}
+        >
           {isLoading ? (
             <ImSpinner2 className="animate-spin" color="#a855f7" size={36} />
           ) : isPlaying ? (

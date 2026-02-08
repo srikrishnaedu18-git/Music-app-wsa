@@ -32,9 +32,9 @@ const Homepage = () => {
     playSongAtIndex,
     handleTogglePlay,
     handleNext,
-    handlePrev,
+    handlePrevious,
     handleTimeUpdate,
-    handleLoadedMetaData,
+    handleLoadedMetadata,
     handleEnded,
     handleToggleMute,
     handleToggleLoop,
@@ -60,7 +60,7 @@ const Homepage = () => {
     playSongAtIndex,
     handleTogglePlay,
     handleNext,
-    handlePrev,
+    handlePrevious,
     handleSeek,
   };
 
@@ -127,7 +127,7 @@ const Homepage = () => {
     <div className="homepage-root">
       <audio
         ref={audioRef}
-        onLoadedMetadata={handleLoadedMetaData}
+        onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
       >

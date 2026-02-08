@@ -1,7 +1,7 @@
 import React from "react";
 import "../../css/songs/SongGrid.css";
 import { useSelector } from "react-redux";
-import songCard from "./SongCard";
+import SongCard from "./SongCard";
 
 const SongGrid = ({ songs, onSelectFavourite }) => {
   if (!songs || songs.length === 0) {
@@ -19,10 +19,10 @@ const SongGrid = ({ songs, onSelectFavourite }) => {
       <h2 className="song-grid-heading">Your favourites</h2>
       <div className="song-grid">
         {songs.map((song) => (
-          <songCard
+          <SongCard
             key={song.id}
             song={song}
-            onSelectFavourite={onSelectFavourite(song)}
+            onSelectFavourite={() => onSelectFavourite(song)} // ✅ pass a function
           />
         ))}
       </div>
